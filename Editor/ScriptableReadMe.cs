@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LTX.Editor
 {
-    [CreateAssetMenu(menuName = "Inu/ReadMe", fileName = "New ReadMe")]
+    [CreateAssetMenu(menuName = "LTX/ReadMe", fileName = "New ReadMe")]
     public class ScriptableReadMe : ScriptableObject
     {
         [SerializeField]

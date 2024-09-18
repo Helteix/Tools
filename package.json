@@ -1,19 +1,18 @@
 {
-    "name": "com.ltx.tools",
-    "version": "1.0.0",
-    "displayName": "LTX Tools",
-    "description": "Common tools used accross ltx packages that can help your productivity when developping your game.",
-    "unity": "2020.1",
-    "unityRelease": "0b5",
-    "dependencies": {},
-    "keywords": [
-        "Scripts",
-        "Tools",
-        "Advanced"
-    ],
-    "author": {
-        "name": "LTX",
-        "email": "lupeni.tuikalepa@gmail.com",
-        "url": "https://www.unity3d.com"
-    }
+  "name": "com.ltx.tools",
+  "version": "1.0.1",
+  "displayName": "LTX Tools",
+  "description": "Common tools used accross ltx packages that can help your productivity when developping your game.",
+  "unity": "2020.1",
+  "unityRelease": "0b5",
+  "keywords": [
+    "Scripts",
+    "Tools",
+    "Advanced"
+  ],
+  "author": {
+    "name": "LTX",
+    "email": "lupeni.tuikalepa@gmail.com",
+    "url": "https://www.unity3d.com"
+  }
 }
