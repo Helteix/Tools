@@ -8,7 +8,7 @@ namespace LTX.Editor
     [CreateAssetMenu(menuName = "LTX/ReadMe", fileName = "New ReadMe")]
     public class ScriptableReadMe : ScriptableObject
     {
-        [SerializeField]
+        [SerializeField, InspectorName("")]
         private Annotable readMeText;
     }
 }
