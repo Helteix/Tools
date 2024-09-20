@@ -10,6 +10,8 @@ namespace LTX.Tools
 #if UNITY_EDITOR
         [field: SerializeField]
         public string Annotation { get; private set; }
+        [field: SerializeField]
+        public float FontSize { get; private set; }
 #endif
     }
     [System.Serializable]

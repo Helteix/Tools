@@ -11,70 +11,94 @@ namespace LTX.Editor
     [CustomPropertyDrawer(typeof(Annotable), false), System.Serializable]
     public class AnnotablePropertyDrawer : PropertyDrawer
     {
+        protected virtual string VisualAssetTreePath => "Packages/com.ltx.tools/Editor/UIToolkit/AnnotableUXML.uxml";
+
+        private const string PANEL_ENABLE_CLASS = "panel-enable";
+        private const string PANEL_DISABLE_CLASS = "panel-disable";
+
+
+        private VisualTreeAsset visualTreeAsset;
+
+        private VisualElement editPanel;
+        private VisualElement showPanel;
+
+        private Slider textSizeSlider;
         private HelpBox helpBox;
         private TextField textField;
-        private VisualElement textFieldContainer;
+        private ToolbarButton saveButton;
 
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            var container = new VisualElement();
+            if (visualTreeAsset == null)
+                visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualAssetTreePath);
+
 
             SerializedProperty annotationProperty = property.FindBackingFieldPropertyRelative(nameof(Annotable.Annotation));
+            SerializedProperty fontSizeProperty = property.FindBackingFieldPropertyRelative(nameof(Annotable.FontSize));
+            var root = visualTreeAsset.Instantiate(property.propertyPath);
 
-            //Help box
-            helpBox = new HelpBox(annotationProperty.stringValue, HelpBoxMessageType.None)
-            {
-                focusable = true,
-            };
-            helpBox.AddManipulator(new Clickable(OpenTextField));
-            container.Add(helpBox);
+            editPanel = root.Query("EditMode").First();
+            showPanel = root.Query("DisplayMode").First();
 
-            //Text field
-            textField = new TextField(string.Empty)
-            {
-                multiline = true,
-                style = { flexShrink = 1 }
-            };
-            textField.RegisterValueChangedCallback(UpdateHelpBox);
-            textField.BindProperty(annotationProperty);
+            //Slider
+            textSizeSlider = root.Q<Slider>("TextSizeSlider");
 
-            textFieldContainer = new VisualElement()
+            textSizeSlider.BindProperty(fontSizeProperty);
+            textSizeSlider.RegisterCallback<ChangeEvent<float>>((evt) =>
             {
-                style = { flexDirection = FlexDirection.Row }
-            };
-            textFieldContainer.Add(textField);
-            textFieldContainer.Add(new Button(CloseTextField)
-            {
-                text = "Save",
-                style = { width = 150, flexShrink = 0, flexGrow = 1},
+                helpBox.Q<Label>().style.fontSize = evt.newValue;
+                textField.style.fontSize = evt.newValue;
             });
 
-            container.Add(textFieldContainer);
+            //Help box
+            helpBox = root.Q<HelpBox>();
+            helpBox.AddManipulator(new Clickable(Edit));
 
-            Show(helpBox);
-            Hide(textFieldContainer);
-            return container;
+            //Text field
+            textField = root.Q<TextField>("InputField");
+            textField.RegisterValueChangedCallback(UpdateHelpBox);
+            textField.RegisterCallback(new EventCallback<FocusOutEvent>(ctx => Show()));
+            textField.BindProperty(annotationProperty);
+
+            saveButton = root.Q<ToolbarButton>("Save");
+            saveButton.clicked += Show;
+
+            Show();
+            return root;
         }
 
+        private Label GetHelpBoxLabel() => helpBox.Q<Label>();
 
         private void UpdateHelpBox(ChangeEvent<string> evt)
         {
-            helpBox.text = $"[Click to edit] : \n " + evt.newValue;
+            helpBox.text = evt.newValue;
+
         }
 
-        private void OpenTextField(EventBase obj)
+
+        public void Edit()
         {
-            Hide(helpBox);
-            Show(textFieldContainer);
+            editPanel.RemoveFromClassList(PANEL_DISABLE_CLASS);
+            editPanel.AddToClassList(PANEL_ENABLE_CLASS);
+
+            showPanel.RemoveFromClassList(PANEL_ENABLE_CLASS);
+            showPanel.AddToClassList(PANEL_DISABLE_CLASS);
+
+            saveButton.RemoveFromClassList(PANEL_DISABLE_CLASS);
+            saveButton.AddToClassList(PANEL_ENABLE_CLASS);
         }
 
-        private void CloseTextField()
+        public void Show()
         {
-            Show(helpBox);
-            Hide(textFieldContainer);
+            showPanel?.RemoveFromClassList(PANEL_DISABLE_CLASS);
+            showPanel?.AddToClassList(PANEL_ENABLE_CLASS);
+
+            editPanel?.RemoveFromClassList(PANEL_ENABLE_CLASS);
+            editPanel?.AddToClassList(PANEL_DISABLE_CLASS);
+
+            saveButton.RemoveFromClassList(PANEL_ENABLE_CLASS);
+            saveButton.AddToClassList(PANEL_DISABLE_CLASS);
         }
 
-        private void Hide(VisualElement visualElement) => visualElement.style.display = DisplayStyle.None;
-        private void Show(VisualElement visualElement) => visualElement.style.display = DisplayStyle.Flex;
     }
 }
