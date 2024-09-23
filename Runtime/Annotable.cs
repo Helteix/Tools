@@ -8,10 +8,30 @@ namespace LTX.Tools
     public class Annotable
     {
 #if UNITY_EDITOR
-        [field: SerializeField]
-        public string Annotation { get; private set; }
-        [field: SerializeField]
-        public float FontSize { get; private set; }
+        [SerializeField]
+        private string annotation;
+
+        [SerializeField]
+        private float fontSize;
+
+
+        public Annotable(string annotation = "", float size = 15)
+        {
+            this.annotation = annotation;
+        }
+
+        public string Annotation
+        {
+            get => annotation;
+            private set => annotation = value;
+        }
+
+
+        public float FontSize
+        {
+            get => fontSize;
+            private set => fontSize = value;
+        }
 #endif
     }
     [System.Serializable]
