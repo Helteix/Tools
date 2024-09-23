@@ -31,6 +31,5 @@ namespace LTX.Editor
         {
             return new AnnotableElement(property);
         }
-
     }
 }

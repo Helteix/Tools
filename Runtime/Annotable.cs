@@ -9,10 +9,10 @@ namespace LTX.Tools
     {
 #if UNITY_EDITOR
         [SerializeField]
-        private string annotation;
+        private string annotation = "";
 
         [SerializeField]
-        private float fontSize;
+        private float fontSize = 15f;
 
 
         public Annotable(string annotation = "", float size = 15)
