@@ -12,9 +12,8 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
     [FilePath("ProjectSettings/LTX/LTXAssets.asset", FilePathAttribute.Location.ProjectFolder)]
     public class LTXAssetLibrary : ScriptableSingleton<LTXAssetLibrary>
     {
-        [FormerlySerializedAs("folderData")]
         [SerializeField]
-        private List<LTXAssetData> foldersData;
+        private List<LTXAssetData> foldersData = new();
 
         private DynamicBuffer<LTXAssetData> buffer = new(128);
 
