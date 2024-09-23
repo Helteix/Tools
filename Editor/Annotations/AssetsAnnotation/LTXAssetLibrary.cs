@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 
 namespace LTX.Editor.Annotations.FoldersAnnotation
 {
-    [FilePath("Setting/FoldersData.asset", FilePathAttribute.Location.ProjectFolder)]
+    [FilePath("ProjectSettings/LTX/LTXAssets.asset", FilePathAttribute.Location.ProjectFolder)]
     public class LTXAssetLibrary : ScriptableSingleton<LTXAssetLibrary>
     {
         [FormerlySerializedAs("folderData")]
@@ -33,6 +33,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
             }
         }
 
+        public void Save() => Save(true);
         internal bool Exists(string folderPath, out LTXAssetData result, out int index)
         {
             index = GetIndex(folderPath);
@@ -83,6 +84,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
                 foldersData.RemoveAt(idx);
             }
             result = removed.ToArray();
+            Save();
             return result.Length > 0;
         }
 
@@ -95,6 +97,8 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
 
                 foldersData.Add(data[i]);
             }
+
+            Save();
         }
         public int GetIndex(string folderPath)
         {
