@@ -68,7 +68,10 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
                         GUIStyle style = EditorStyles.textArea;
                         style.fontSize = fontSize;
                         float height = 36f + Mathf.CeilToInt(style.CalcSize(new GUIContent(annotationProperty.stringValue)).y);
-                        annotationProperty.stringValue = EditorGUILayout.TextArea(annotationProperty.stringValue, style, GUILayout.Height(height));
+                        var temp = EditorGUILayout.TextArea(annotationProperty.stringValue, style,
+                            GUILayout.Height(height));
+
+                        annotationProperty.stringValue = temp;
                     }
                     else
                     {
@@ -90,6 +93,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
             if (EditorGUI.EndChangeCheck())
             {
                 librarySerializedObject.ApplyModifiedProperties();
+                library.Save();
             }
         }
 
