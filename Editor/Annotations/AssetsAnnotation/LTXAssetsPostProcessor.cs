@@ -16,6 +16,9 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
             for (int i = 0; i < deletedAssets.Length; i++)
             {
                 string path = deletedAssets[i];
+                if(string.IsNullOrEmpty(path))
+                    continue;
+
                 string extension = Path.GetExtension(path);
                 if (string.IsNullOrWhiteSpace(extension))
                 {
