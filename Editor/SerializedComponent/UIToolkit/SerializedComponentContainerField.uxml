@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.ltx.tools/Editor/Common/LTX_USS.uss?fileID=7433441132597879392&amp;guid=eec5d1e447cce50429d105d07f226ca3&amp;type=3#LTX_USS" />
+    <ui:VisualElement name="Root" class="unity-help-box" style="flex-grow: 0; flex-direction: column;">
+        <ui:VisualElement name="Top" style="flex-grow: 1; flex-direction: row;">
+            <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="width: auto; -unity-text-align: middle-left;" />
+            <ui:VisualElement name="Space" style="flex-grow: 0; width: 10%;" />
+            <ui:Button text="Add" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Add" style="flex-grow: 1;" />
+            <ui:Button text="Clear" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Clear" style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <uie:PropertyField label="Property" binding-path="component" name="Property" style="flex-shrink: 0; flex-grow: 1;" />
+    </ui:VisualElement>
+</ui:UXML>

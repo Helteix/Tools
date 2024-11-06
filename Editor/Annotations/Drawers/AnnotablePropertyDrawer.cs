@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using LTX.Tools;
+using LTX.Tools.Editor.Annotations.UIToolkit;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace LTX.Editor
+namespace LTX.Tools.Editor.Annotations.Drawers
 {
     [CustomPropertyDrawer(typeof(Annotable), false), System.Serializable]
     public class AnnotablePropertyDrawer : PropertyDrawer

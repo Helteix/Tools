@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using LTX.Tools;
 using UnityEngine;
 using UnityEngine.Serialization;

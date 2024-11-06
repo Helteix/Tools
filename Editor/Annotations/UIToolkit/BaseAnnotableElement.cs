@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
-using LTX.Tools;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace LTX.Editor
+namespace LTX.Tools.Editor.Annotations.UIToolkit
 {
-    public class BaseAnnotableElement : BindableElement,
-        INotifyValueChanged<string>
+    public class BaseAnnotableElement : BindableElement, INotifyValueChanged<string>
     {
         private const string PANEL_ENABLE_CLASS = "panel-enable";
         private const string PANEL_DISABLE_CLASS = "panel-disable";

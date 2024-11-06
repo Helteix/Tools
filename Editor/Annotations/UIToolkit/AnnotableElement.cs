@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace LTX.Editor
+namespace LTX.Tools.Editor.Annotations.UIToolkit
 {
     public class AnnotableElement : BaseAnnotableElement
     {
