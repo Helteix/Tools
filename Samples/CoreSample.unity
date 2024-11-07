@@ -317,7 +317,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1210715509}
-  - component: {fileID: 1210715508}
+  - component: {fileID: 1210715510}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -325,21 +325,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1210715508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1210715507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9f6de31ed518224a9d45982099e54d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  annotable:
-    <Annotation>k__BackingField: damn
-    value: 0.72
 --- !u!4 &1210715509
 Transform:
   m_ObjectHideFlags: 0
@@ -355,6 +340,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1210715510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1210715507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f3da0a96c42198c799711ae5c9e79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  container:
+    <Component>k__BackingField:
+      rid: 9125389228618809351
+  references:
+    version: 2
+    RefIds:
+    - rid: 9125389228618809351
+      type: {class: LogString, ns: LTX.Tools.Samples.SerializedComponents, asm: LTX.Tools.Samples}
+      data:
+        text: TEXT HAHAHAHA
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

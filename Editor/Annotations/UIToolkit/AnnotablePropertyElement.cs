@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using LTX.Tools;
-using UnityEditor;
-using UnityEditor.UIElements;
+﻿using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace LTX.Editor
+namespace LTX.Tools.Editor.Annotations.UIToolkit
 {
     public class AnnotablePropertyElement : BaseAnnotableElement
     {

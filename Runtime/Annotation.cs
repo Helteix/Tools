@@ -35,14 +35,14 @@ namespace LTX.Tools
 #endif
     }
     [System.Serializable]
-    public class Annotable<T> : Annotable, IEquatable<T>
+    public class Annotation<T> : Annotable, IEquatable<T>
     {
         [SerializeField]
         public T value;
 
         public override string ToString() => value.ToString();
 
-        public static implicit operator T(Annotable<T> annotable) => annotable.value;
+        public static implicit operator T(Annotation<T> annotation) => annotation.value;
 
         bool IEquatable<T>.Equals(T other) => EqualityComparer<T>.Default.Equals(value, other);
 

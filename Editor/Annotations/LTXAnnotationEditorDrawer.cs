@@ -1,15 +1,13 @@
-﻿using LTX.Tools;
+﻿using LTX.Tools.Editor.Annotations.Data;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-
-namespace LTX.Editor.Annotations.FoldersAnnotation
+namespace LTX.Tools.Editor.Annotations
 {
     [InitializeOnLoad]
-    public static class LTXAssetEditorDrawer
+    public static class LTXAnnotationEditorDrawer
     {
-        static LTXAssetEditorDrawer()
+        static LTXAnnotationEditorDrawer()
         {
             EditorApplication.projectWindowItemOnGUI += DrawFolderIcon;
             UnityEditor.Editor.finishedDefaultHeaderGUI += OnPostHeaderGUI;
@@ -24,7 +22,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
         {
             const float buttonWidth = 150f;
 
-            LTXAssetLibrary library = LTXAssetLibrary.instance;
+            LTXAnnotationsLibrary library = LTXAnnotationsLibrary.instance;
             SerializedObject librarySerializedObject = new SerializedObject(library);
             EditorGUI.BeginChangeCheck();
             foreach (var t in editor.targets)
@@ -33,14 +31,15 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
                 if (string.IsNullOrEmpty(path))
                     continue;
 
+                string guid = AssetDatabase.AssetPathToGUID(path);
                 GUILayout.Space(20);
 
-                if (library.Exists(path, out var result, out int index))
+                if (library.Exists(guid, out var result, out int index))
                 {
                     EditorGUILayout.BeginHorizontal();
                     if (GUILayout.Button("Remove", GUILayout.ExpandWidth(false), GUILayout.Width(buttonWidth)))
                     {
-                        RemoveFolderData(library, path);
+                        RemoveFolderData(library, guid);
                         return;
                     }
 
@@ -48,7 +47,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
                     SerializedProperty property = librarySerializedObject
                         .FindProperty(listName)
                         .GetArrayElementAtIndex(index)
-                        .FindPropertyRelative(nameof(LTXAssetData.annotation));
+                        .FindPropertyRelative(nameof(LTXProjectAnnotation.annotation));
 
 
                     SerializedProperty fontSizeProperty = property.FindPropertyRelative("fontSize");
@@ -65,7 +64,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
 
                     if (IsEditing)
                     {
-                        GUIStyle style = EditorStyles.textArea;
+                        GUIStyle style = new GUIStyle(EditorStyles.textArea);
                         style.fontSize = fontSize;
                         float height = 36f + Mathf.CeilToInt(style.CalcSize(new GUIContent(annotationProperty.stringValue)).y);
                         var temp = EditorGUILayout.TextArea(annotationProperty.stringValue, style,
@@ -75,7 +74,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
                     }
                     else
                     {
-                        GUIStyle style = EditorStyles.helpBox;
+                        GUIStyle style = new GUIStyle(EditorStyles.helpBox);
                         style.fontSize = fontSize;
                         style.richText = true;
 
@@ -85,7 +84,7 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
                 else
                 {
                     if (GUILayout.Button("Add Note"))
-                        AddFolderData(library, path);
+                        AddFolderData(library, guid);
                 }
 
             }
@@ -99,12 +98,10 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
 
         private static void DrawFolderIcon(string guid, Rect rect)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-
-            if(!LTXAssetLibrary.instance.IsValid(path))
+            if(!LTXAnnotationsLibrary.instance.IsValid(guid))
                 return;
 
-            if (!LTXAssetLibrary.instance.Exists(path, out var result))
+            if (!LTXAnnotationsLibrary.instance.Exists(guid, out var result))
                 return;
 
             if (!string.IsNullOrEmpty(result.annotation.Annotation))
@@ -124,16 +121,16 @@ namespace LTX.Editor.Annotations.FoldersAnnotation
 
         }
 
-        internal static void AddFolderData(LTXAssetLibrary library, string path)
+        internal static void AddFolderData(LTXAnnotationsLibrary library, string guid)
         {
-            library.AddFolderData(new LTXAssetData() { annotation = new Annotable("Write a new note..."), path = path, });
+            library.AddFolderData(new LTXProjectAnnotation() { annotation = new Annotable("Write a new note..."), guid = guid, });
 
             Reload();
-
         }
-        internal static void RemoveFolderData(LTXAssetLibrary library, string path)
+
+        internal static void RemoveFolderData(LTXAnnotationsLibrary library, string guid)
         {
-            library.DeleteFolderData(path, out _);
+            library.DeleteFolderData(guid, out _);
             Reload();
         }
 
