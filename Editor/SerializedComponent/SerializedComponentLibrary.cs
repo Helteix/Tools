@@ -28,12 +28,14 @@ namespace LTX.Tools.Editor.SerializedComponent
                 for (int i = 0; i < assemblyTypes.Length; i++)
                 {
                     Type assemblyType = assemblyTypes[i];
-                    if(assemblyType.IsSubclassOf(typeof(UnityEngine.Object)))
-                        continue;
-                    if(assemblyType.IsNestedPrivate)
+                    if (!IsSubClass(assemblyType, typeof(ISComponent)) || (!assemblyType.IsClass && !assemblyType.IsValueType))
                         continue;
 
-                    if(assemblyType.GetConstructors().Any(ctx => ctx.GetParameters().Length > 0))
+                    if (assemblyType.IsNestedPrivate)
+                        continue;
+
+                    ConstructorInfo[] constructorInfos = assemblyType.GetConstructors();
+                    if (constructorInfos.Length > 0 && constructorInfos.All(ctx => ctx.GetParameters().Length != 0))
                         continue;
 
                     AddSerializedComponentMenuAttribute attribute = assemblyType.GetCustomAttribute<AddSerializedComponentMenuAttribute>();

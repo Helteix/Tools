@@ -1,48 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEditor.IMGUI.Controls;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace LTX.Tools.Editor.SerializedComponent
 {
-    public class AddComponentDropdown : DropdownMenu
+    public class AddComponentDropdown
     {
         public event Action<SerializedComponentLibrary.TypeInfos> OnTypeSelected;
 
         private readonly Type typeConstraint;
         private readonly string pathConstraint;
+        private GenericMenu menu;
 
-
-        public AddComponentDropdown(VisualElement visualElement, string pathConstraint = null, Type typeConstraint = null) : base()
+        public AddComponentDropdown(string pathConstraint = null, Type typeConstraint = null) : base()
         {
             this.typeConstraint = typeConstraint;
             this.pathConstraint = pathConstraint;
-
+            menu = new GenericMenu();
             var types = SerializedComponentLibrary.GetTypes();
-            visualElement.AddManipulator(new ContextualMenuManipulator(ctx =>
-            {
-                foreach (SerializedComponentLibrary.TypeInfos type in types)
-                {
-                    AppendAction(type.path,
-                        action =>
-                        {
-                            OnTypeSelected?.Invoke(type);
-                        },
-                        DropdownMenuAction.Status.Normal);
-                }
-            }));
+
             foreach (SerializedComponentLibrary.TypeInfos type in types)
             {
-                AppendAction(type.path,
-                    action =>
-                    {
-                        OnTypeSelected?.Invoke(type);
-                    },
-                    DropdownMenuAction.Status.Normal);
+                menu.AddItem(new GUIContent(type.path), false, () => { OnTypeSelected?.Invoke(type); });
             }
         }
 
+        public void Show(EventBase eventBase)
+        {
+
+            menu.DropDown(new Rect(eventBase.originalMousePosition, Vector2.zero));
+        }
 /*
         protected override AdvancedDropdownItem BuildRoot()
         {

@@ -2,8 +2,8 @@
 
 namespace LTX.Tools.Samples.SerializedComponents
 {
-    public class SamplesSComponent : ISComponent
+    public interface ISampleSComponent : ISComponent
     {
-
+        void Log();
     }
 }

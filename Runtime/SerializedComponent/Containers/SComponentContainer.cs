@@ -6,21 +6,24 @@ namespace LTX.Tools.SerializedComponent
 {
 
     [System.Serializable]
-    public struct SComponentContainer<T> where T : ISComponent
+    public struct SComponentContainer<T> where T : class, ISComponent
     {
-        [SerializeReference]
-        private T component;
+        [field: SerializeReference]
+        public T Component { get; private set; }
+
+        public bool HasComponent => Component != null;
 
         public SComponentContainer(T component)
         {
-            this.component = component;
+            this.Component = component;
         }
 
-        public T Component => component;
 
         public void SetBehaviour(T behaviour)
         {
-            this.component = behaviour;
+            this.Component = behaviour;
         }
+
+        public static implicit operator bool(SComponentContainer<T> container) => container.HasComponent;
     }
 }

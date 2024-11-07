@@ -1,16 +1,21 @@
-﻿using LTX.Tools.SerializedComponent;
+﻿using System;
+using LTX.Tools.SerializedComponent;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace LTX.Tools.Samples.SerializedComponents
 {
     public class SampleSComponentsOnMonoBehaviour : MonoBehaviour
     {
+        [FormerlySerializedAs("component")]
         [SerializeField]
-        public SComponentsContainer<SamplesSComponent> components;
+        public SComponentContainer<ISampleSComponent> container;
 
 
-        [SerializeField]
-        public SComponentContainer<SamplesSComponent> component;
-
+        private void Awake()
+        {
+            if(container)
+                container.Component.Log();
+        }
     }
 }
