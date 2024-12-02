@@ -13,7 +13,8 @@ namespace LTX.Tools.Editor
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            return new SComponentElement(property);
+            return new SComponentElement(property, fieldInfo.FieldType.GetGenericArguments()[0]);
+
         }
     }
 }

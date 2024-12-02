@@ -13,6 +13,7 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
     public class SComponentElement : VisualElement, INotifyValueChanged<ISComponent>
     {
         private readonly SerializedProperty property;
+        private readonly Type genericArgument;
         private const string PANEL_ENABLE_CLASS = "panel-enable";
         private const string PANEL_DISABLE_CLASS = "panel-disable";
 
@@ -47,9 +48,11 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
         private PropertyField componentField;
         private HelpBox helpBox;
 
-        public SComponentElement(SerializedProperty property)
+        public SComponentElement(SerializedProperty property, Type genericArgument)
         {
             this.property = property;
+            this.genericArgument = genericArgument;
+
             VisualTreeAsset visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
 
             VisualElement root = visualTreeAsset.Instantiate();
@@ -92,16 +95,16 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
 
         private void OnAdd(EventBase eventBase)
         {
-            AddComponentDropdown addComponentDropdown = new AddComponentDropdown();
+            AddComponentDropdown addComponentDropdown = new AddComponentDropdown(string.Empty, genericArgument);
             addComponentDropdown.OnTypeSelected += SetComponent;
 
             addComponentDropdown.Show(eventBase);
         }
 
-        private void SetComponent(SerializedComponentLibrary.TypeInfos typeInfos)
+        private void SetComponent(Type type)
         {
             SerializedProperty propertyRelative = property.FindBackingFieldPropertyRelative(nameof(SComponentContainer<ISComponent>.Component));
-            propertyRelative.managedReferenceValue = Activator.CreateInstance(typeInfos.type);
+            propertyRelative.managedReferenceValue = Activator.CreateInstance(type);
 
             property.serializedObject.ApplyModifiedProperties();
             // Debug.Log("Adding component");
@@ -155,6 +158,7 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
 
                 Type type = propertyRelative.managedReferenceValue.GetType();
                 typeInfos.text = type.Name;
+
             }
         }
 

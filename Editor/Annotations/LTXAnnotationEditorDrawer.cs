@@ -25,6 +25,9 @@ namespace LTX.Tools.Editor.Annotations
             LTXAnnotationsLibrary library = LTXAnnotationsLibrary.instance;
             SerializedObject librarySerializedObject = new SerializedObject(library);
             EditorGUI.BeginChangeCheck();
+            if(editor.targets.Length > 1)
+                return;
+            
             foreach (var t in editor.targets)
             {
                 string path = AssetDatabase.GetAssetPath(t);
