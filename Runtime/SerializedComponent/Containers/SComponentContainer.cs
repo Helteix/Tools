@@ -19,10 +19,12 @@ namespace LTX.Tools.SerializedComponent
         }
 
 
-        public void SetBehaviour(T behaviour)
+        public void SetComponent(T component)
         {
-            this.Component = behaviour;
+            this.Component = component;
         }
+
+        public void Clear() => SetComponent(null);
 
         public static implicit operator bool(SComponentContainer<T> container) => container.HasComponent;
     }
