@@ -16,7 +16,7 @@ namespace LTX.Tools.Editor.SerializedComponent
         private readonly string pathConstraint;
         private GenericMenu menu;
 
-        public AddComponentDropdown(string pathConstraint = null, Type typeConstraint = null) : base()
+        public AddComponentDropdown(string pathConstraint = null, Type typeConstraint = null, bool showNonCompatibleComponents = false) : base()
         {
             this.typeConstraint = typeConstraint;
             this.pathConstraint = pathConstraint;
@@ -29,6 +29,9 @@ namespace LTX.Tools.Editor.SerializedComponent
             foreach (Type type in types)
             {
                 if(type.IsAbstract || type.IsInterface)
+                    continue;
+
+                if(type.IsSubclassOf(typeof(UnityEngine.Object)))
                     continue;
 
                 string path = $"Others/{type.Name}";
@@ -46,7 +49,7 @@ namespace LTX.Tools.Editor.SerializedComponent
 
                 if(valid)
                     menu.AddItem(new GUIContent(path), false, () => { OnTypeSelected?.Invoke(type); });
-                else
+                else if(showNonCompatibleComponents)
                     menu.AddDisabledItem(new GUIContent(path), false);
             }
         }
