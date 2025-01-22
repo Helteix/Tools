@@ -12,8 +12,7 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
 {
     public class SComponentElement : VisualElement, INotifyValueChanged<ISComponent>
     {
-        private readonly SerializedProperty property;
-        private readonly Type genericArgument;
+
         private const string PANEL_ENABLE_CLASS = "panel-enable";
         private const string PANEL_DISABLE_CLASS = "panel-disable";
 
@@ -37,6 +36,10 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
             }
         }
 
+        private readonly SerializedProperty property;
+        private readonly Type typeConstraint;
+        private readonly string pathConstraint;
+        private readonly bool showNonCompatible;
 
         private Button addButton;
         private Button clearButton;
@@ -48,10 +51,13 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
         private PropertyField componentField;
         private HelpBox helpBox;
 
-        public SComponentElement(SerializedProperty property, Type genericArgument)
+        public SComponentElement(SerializedProperty property, Type typeConstraint, string pathConstraint,
+            bool showNonCompatible)
         {
             this.property = property;
-            this.genericArgument = genericArgument;
+            this.typeConstraint = typeConstraint;
+            this.pathConstraint = pathConstraint;
+            this.showNonCompatible = showNonCompatible;
 
             VisualTreeAsset visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
 
@@ -95,7 +101,7 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
 
         private void OnAdd(EventBase eventBase)
         {
-            AddComponentDropdown addComponentDropdown = new AddComponentDropdown(string.Empty, genericArgument);
+            AddComponentDropdown addComponentDropdown = new AddComponentDropdown(pathConstraint, typeConstraint, showNonCompatible);
             addComponentDropdown.OnTypeSelected += SetComponent;
 
             addComponentDropdown.Show(eventBase);

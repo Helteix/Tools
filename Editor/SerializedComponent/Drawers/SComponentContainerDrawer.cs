@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using LTX.Tools.Editor.SerializedComponent.UIToolkit;
 using LTX.Tools.SerializedComponent;
 using UnityEditor;
@@ -13,8 +16,22 @@ namespace LTX.Tools.Editor
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            return new SComponentElement(property, fieldInfo.FieldType.GetGenericArguments()[0]);
+            Type fieldType = fieldInfo.FieldType;
 
+            Type typeConstraint = fieldType.GetGenericArguments()[0];
+
+            string pathConstraint = string.Empty;
+            bool showNonCompatible = false;
+
+            foreach (var o in fieldInfo.GetCustomAttributes())
+            {
+                if (o is FilterPathSComponentsAttribute filterPathSComponentsAttribute)
+                    pathConstraint = filterPathSComponentsAttribute.pathConstraint;
+                if (o is ShowNonCompatibleSComponentsAttribute )
+                    showNonCompatible = true;
+            }
+
+            return new SComponentElement(property, typeConstraint, pathConstraint, showNonCompatible);
         }
     }
 }

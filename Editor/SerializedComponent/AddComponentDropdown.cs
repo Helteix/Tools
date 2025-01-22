@@ -12,17 +12,13 @@ namespace LTX.Tools.Editor.SerializedComponent
     {
         public event Action<Type> OnTypeSelected;
 
-        private readonly Type typeConstraint;
-        private readonly string pathConstraint;
         private GenericMenu menu;
 
         public AddComponentDropdown(string pathConstraint = null, Type typeConstraint = null, bool showNonCompatibleComponents = false) : base()
         {
-            this.typeConstraint = typeConstraint;
-            this.pathConstraint = pathConstraint;
             menu = new GenericMenu();
 
-            Type t = typeConstraint ?? typeof(ISComponent);
+            Type neededType = typeConstraint ?? typeof(ISComponent);
 
             var types = TypeCache.GetTypesDerivedFrom(typeof(ISComponent));
 
@@ -41,16 +37,28 @@ namespace LTX.Tools.Editor.SerializedComponent
 
                 bool valid = true;
 
-                if(!string.IsNullOrEmpty(pathConstraint))
-                    valid = !path.Contains(pathConstraint);
+                if (!string.IsNullOrEmpty(pathConstraint))
+                {
+                    // Debug.Log($"{path} with {pathConstraint} => {path.StartsWith(pathConstraint)}");
+                    valid &= path.StartsWith(pathConstraint);
+                }
 
-                if (t != type && ((t.IsClass && !type.IsSubclassOf(t)) || (type.GetInterfaces().All(ctx => ctx != t))))
-                    valid = false;
+                if (neededType.IsClass)
+                    valid &= type == neededType || type.IsSubclassOf(neededType);
+                if (neededType.IsInterface)
+                    valid &= type.GetInterfaces().Any(ctx => ctx == neededType);
 
-                if(valid)
+                if (valid)
+                {
+                    if(!string.IsNullOrEmpty(pathConstraint))
+                        path = path.Remove(0, pathConstraint.Length + (path.EndsWith('/') ? 0 : 1));
+
                     menu.AddItem(new GUIContent(path), false, () => { OnTypeSelected?.Invoke(type); });
-                else if(showNonCompatibleComponents)
+                }
+                else if (showNonCompatibleComponents)
+                {
                     menu.AddDisabledItem(new GUIContent(path), false);
+                }
             }
         }
 
