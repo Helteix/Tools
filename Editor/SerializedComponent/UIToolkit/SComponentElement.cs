@@ -48,8 +48,8 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
         private VisualElement container;
 
         private DropdownField dropdownField;
-        private PropertyField componentField;
         private HelpBox helpBox;
+        private SerializedProperty componentProperty;
 
         public SComponentElement(SerializedProperty property, Type typeConstraint, string pathConstraint,
             bool showNonCompatible)
@@ -74,17 +74,10 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
             helpBox = new HelpBox("No components assigned yet.", HelpBoxMessageType.Error);
             container.Add(helpBox);
 
-            SerializedProperty propertyRelative = property.FindBackingFieldPropertyRelative(nameof(SComponentContainer<ISComponent>.Component));
-            propertyRelative.isExpanded = true;
+            componentProperty = property.FindBackingFieldPropertyRelative(nameof(SComponentContainer<ISComponent>.Component));
+            componentProperty.isExpanded = true;
 
-            componentField = new PropertyField(propertyRelative, string.Empty);
-            componentField.RegisterCallback<ChangeEvent<string>>(evt =>
-            {
-                componentField.Q<Toggle>().style.display = DisplayStyle.None;
-            });
-            container.Add(componentField);
-
-
+            FillContainerForProperty();
 
             label.text = property.displayName;
 
@@ -93,7 +86,26 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
             RefreshLayout();
         }
 
+        private void FillContainerForProperty()
+        {
+            container.Clear();
+            SerializedProperty copy = componentProperty.Copy();
+            copy.Next(true);
+            do
+            {
+                if (!copy.propertyPath.Contains(componentProperty.propertyPath))
+                    break;
 
+                PropertyField propertyField = new PropertyField(copy)
+                {
+                    name = copy.name
+                };
+                container.Add(propertyField);
+
+            } while (copy.NextVisible(false));
+
+            container.Bind(copy.serializedObject);
+        }
         public void SetValueWithoutNotify(ISComponent newValue)
         {
             mValue = newValue;
@@ -146,8 +158,7 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
                 helpBox.RemoveFromClassList(PANEL_DISABLE_CLASS);
                 helpBox.AddToClassList(PANEL_ENABLE_CLASS);
 
-                componentField.RemoveFromClassList(PANEL_ENABLE_CLASS);
-                componentField.AddToClassList(PANEL_DISABLE_CLASS);
+                container.Clear();
             }
             else
             {
@@ -159,12 +170,10 @@ namespace LTX.Tools.Editor.SerializedComponent.UIToolkit
                 helpBox.AddToClassList(PANEL_DISABLE_CLASS);
                 helpBox.RemoveFromClassList(PANEL_ENABLE_CLASS);
 
-                componentField.AddToClassList(PANEL_ENABLE_CLASS);
-                componentField.RemoveFromClassList(PANEL_DISABLE_CLASS);
+                FillContainerForProperty();
 
                 Type type = propertyRelative.managedReferenceValue.GetType();
                 typeInfos.text = type.Name;
-
             }
         }
 
