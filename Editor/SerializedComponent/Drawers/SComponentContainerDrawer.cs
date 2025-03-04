@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using LTX.Tools.Editor.SerializedComponent.UIToolkit;
 using LTX.Tools.SerializedComponent;
+using LTX.Tools.SerializedComponent.Containers;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace LTX.Tools.Editor
@@ -29,7 +26,9 @@ namespace LTX.Tools.Editor
                     pathConstraint = filterPathSComponentsAttribute.pathConstraint;
                 if (o is ShowNonCompatibleSComponentsAttribute )
                     showNonCompatible = true;
+
             }
+
 
             return new SComponentElement(property, typeConstraint, pathConstraint, showNonCompatible);
         }

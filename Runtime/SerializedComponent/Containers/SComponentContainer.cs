@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
-namespace LTX.Tools.SerializedComponent
+namespace LTX.Tools.SerializedComponent.Containers
 {
 
     [System.Serializable]

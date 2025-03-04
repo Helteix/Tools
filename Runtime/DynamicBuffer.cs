@@ -5,7 +5,7 @@ using UnityEngine;
 namespace LTX.Tools
 {
     [Serializable]
-    public class DynamicBuffer<T>
+    public struct DynamicBuffer<T>
     {
         [SerializeField]
         private T[] innerArray;
