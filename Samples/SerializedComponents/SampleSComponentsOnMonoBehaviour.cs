@@ -1,5 +1,6 @@
 ﻿using System;
 using LTX.Tools.SerializedComponent;
+using LTX.Tools.SerializedComponent.Containers;
 using UnityEngine;
 using UnityEngine.Serialization;
 
