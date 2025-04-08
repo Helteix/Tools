@@ -1,0 +1,68 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using LTX.Editor;
+using LTX.Tools.Settings.Attributes;
+using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UIElements;
+
+namespace LTX.Tools.Settings
+{
+    public static class SettingsAssetCollectionSettingsProvider
+    {
+        [SettingsProvider]
+        public static SettingsProvider CreateMainSettingsProvider()
+        {
+            var provider = new SettingsProvider("LTX", SettingsScope.Project)
+            {
+                activateHandler = (s, element) =>
+                {
+                    SettingsAssetCollectionSettings instance = SettingsAssetCollectionSettings.instance;
+                    SerializedObject serializedObject = new SerializedObject(instance);
+                    SerializedProperty pathProperty = serializedObject.FindBackingFieldProperty(
+                        nameof(SettingsAssetCollectionSettings.CollectionAssetPath));
+                    PropertyField path = new PropertyField(pathProperty, "Settings Path");
+                    path.RegisterValueChangeCallback(ctx => instance.Save());
+
+                    element.StyleSettingsContentWithTitle("Global Settings", new Color(0.2f, 0.54f, 0.8f));
+
+                    element.Add(path);
+                    element.Bind(serializedObject);
+                }
+            };
+
+            return provider;
+        }
+
+        [SettingsProviderGroup]
+
+        public static SettingsProvider[] CreateOtherSettingsProvider()
+        {
+            SettingsCollection collection = SettingsAssetCollectionSettings.instance.GetCollection();
+
+            return collection.Assets.Select(scriptableObject =>
+            {
+                Type type = scriptableObject.GetType();
+                LTXSettingsTitleAttribute att = type.GetCustomAttribute(typeof(LTXSettingsTitleAttribute)) as LTXSettingsTitleAttribute;
+
+                string title = att?.title?? scriptableObject.name;
+                Color color = att?.color ?? LTXSettingsTitleAttribute.DefaultColor;
+
+                return new SettingsProvider($"LTX/{title}", SettingsScope.Project)
+                {
+                    activateHandler = (s, element) =>
+                    {
+                        element.StyleSettingsContentWithTitle(title, color);
+
+                        InspectorElement inspectorElement = new InspectorElement(scriptableObject);
+                        element.Add(inspectorElement);
+                    }
+                };
+            }).ToArray();
+
+        }
+    }
+}
