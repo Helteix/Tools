@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace LTX.Tools.Settings
 {
-    public abstract class SettingsAsset<T> : ScriptableObject where T : SettingsAsset<T>
+    public abstract class LTXSettingsAsset<T> : ScriptableObject where T : ScriptableObject
     {
         public static T Current
         {
             get
             {
-                if (current != null)
-                    return current;
+                if (asset != null)
+                    return asset.GetAsset();
 
                 if (SettingsCollection.Current == null)
                 {
@@ -17,14 +17,16 @@ namespace LTX.Tools.Settings
                     return null;
                 }
 
-                if (SettingsCollection.Current.TryGetSettings(out current))
-                    return current;
+                if (SettingsCollection.Current.TryGetSettings(out asset))
+                    return asset.GetAsset();
 
                 Debug.LogError($"Couldn't load settings of type {typeof(T).Name}");
                 return null;
             }
         }
 
-        private static T current;
+        private static LTXSettingsAsset<T> asset;
+
+        protected virtual T GetAsset() => this as T;
     }
 }

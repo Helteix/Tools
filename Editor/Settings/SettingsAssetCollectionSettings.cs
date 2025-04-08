@@ -22,7 +22,7 @@ namespace LTX.Tools.Settings
         [InitializeOnLoadMethod]
         private static void Load()
         {
-            TypeCache.TypeCollection typesDerivedFrom = TypeCache.GetTypesDerivedFrom(typeof(SettingsAsset<>));
+            TypeCache.TypeCollection typesDerivedFrom = TypeCache.GetTypesDerivedFrom(typeof(LTXSettingsAsset<>));
             instance.Setup(typesDerivedFrom);
 
             AssetDatabase.SaveAssets();
