@@ -27,10 +27,17 @@ namespace LTX.Tools.Settings
                     PropertyField path = new PropertyField(pathProperty, "Settings Path");
                     path.RegisterValueChangeCallback(ctx => instance.Save());
 
-                    element.StyleSettingsContentWithTitle("Global Settings", new Color(0.2f, 0.54f, 0.8f));
+                    VisualElement inner = new VisualElement()
+                    {
+                        name = "LTX settings container"
+                    };
 
-                    element.Add(path);
-                    element.Bind(serializedObject);
+                    inner.StyleSettingsContentWithTitle("Global Settings", new Color(0.2f, 0.54f, 0.8f));
+
+                    inner.Add(path);
+                    inner.Bind(serializedObject);
+
+                    element.Add(inner);
                 }
             };
 
@@ -55,10 +62,16 @@ namespace LTX.Tools.Settings
                 {
                     activateHandler = (s, element) =>
                     {
-                        element.StyleSettingsContentWithTitle(title, color);
+                        VisualElement inner = new VisualElement()
+                        {
+                            name = "LTX settings container"
+                        };
+                        inner.StyleSettingsContentWithTitle(title, color);
 
                         InspectorElement inspectorElement = new InspectorElement(scriptableObject);
-                        element.Add(inspectorElement);
+                        inner.Add(inspectorElement);
+
+                        element.Add(inner);
                     }
                 };
             }).ToArray();

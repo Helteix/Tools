@@ -37,11 +37,11 @@ namespace LTX.Tools.Settings
                 current = this;
         }
 
-        internal bool TryGetSettings<T>(out T settings) where T : SettingsAsset<T>
+        internal bool TryGetSettings<T>(out LTXSettingsAsset<T> settings) where T : ScriptableObject
         {
             for (int i = 0; i < settingsAssets.Length; i++)
             {
-                if (settingsAssets[i] is T t)
+                if (settingsAssets[i] is LTXSettingsAsset<T> t)
                 {
                     settings = t;
                     return true;

@@ -9,7 +9,7 @@ namespace LTX.Tools.Settings
         public static void StyleSettingsContentWithTitle(this VisualElement element, string title, Color color)
         {
             StyleLength padding = 10;
-            StyleLength margin = 1;
+            StyleLength margin = 10;
             element.style.paddingBottom = padding;
             element.style.paddingTop = padding;
             element.style.paddingLeft = padding;
@@ -27,6 +27,8 @@ namespace LTX.Tools.Settings
                     unityFontStyleAndWeight = FontStyle.Bold,
                     paddingBottom = 3,
                     marginBottom = 10,
+                    marginLeft = 8,
+                    marginRight = 8,
                     borderBottomWidth = 3,
                     borderBottomColor = color
                 }
