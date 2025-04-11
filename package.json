@@ -1,6 +1,6 @@
 {
   "name": "com.ltx.tools",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "displayName": "Helteix-Tools",
   "description": "Common tools used accross ltx packages that can help your productivity when developping your game.",
   "unity": "2020.1",
