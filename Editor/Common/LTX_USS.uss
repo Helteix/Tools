@@ -1,4 +1,5 @@
 .panel-enable {
+ display: flex;
 }
 
 .panel-disable {

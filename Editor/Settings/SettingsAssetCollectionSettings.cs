@@ -13,24 +13,37 @@ namespace LTX.Tools.Settings
     [FilePath("ProjectSettings/LTX/SettingsAssetCollectionSettings.Asset", FilePathAttribute.Location.ProjectFolder)]
     public class SettingsAssetCollectionSettings : ScriptableSingleton<SettingsAssetCollectionSettings>
     {
-        [field: SerializeField]
-        public string CollectionAssetPath { get; private set; } =
-            "Assets/Settings/LTXSettingsCollection.asset";
 
-        public SettingsCollection GetCollection() => AssetDatabase.LoadAssetAtPath<SettingsCollection>(CollectionAssetPath);
+        [field: SerializeField]
+        public SettingsCollection Collection { get; private set; }
+
+        public SettingsCollection GetCollection()
+        {
+            if (Collection == null)
+                CreateOrFindCollection();
+
+            return Collection;
+        }
 
         [InitializeOnLoadMethod]
         private static void Load()
         {
-            TypeCache.TypeCollection typesDerivedFrom = TypeCache.GetTypesDerivedFrom(typeof(LTXSettingsAsset<>));
-            instance.Setup(typesDerivedFrom);
+            try
+            {
+                TypeCache.TypeCollection typesDerivedFrom = TypeCache.GetTypesDerivedFrom(typeof(LTXSettingsAsset<>));
+                instance.Setup(typesDerivedFrom);
 
-            AssetDatabase.SaveAssets();
+                AssetDatabase.SaveAssets();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
 
         private void Setup(TypeCache.TypeCollection types)
         {
-            EnsureValidCollection();
+            CreateOrFindCollection();
 
             SettingsCollection collection = GetCollection();
 
@@ -45,7 +58,8 @@ namespace LTX.Tools.Settings
         {
             using (SerializedObject serializedObject = new SerializedObject(collection))
             {
-                Object[] subAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(CollectionAssetPath);
+                string path = AssetDatabase.GetAssetPath(collection);
+                Object[] subAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
                 SerializedProperty property = serializedObject.FindProperty("settingsAssets");
                 property.arraySize = subAssets.Length;
                 for (int i = 0; i < subAssets.Length; i++)
@@ -57,11 +71,20 @@ namespace LTX.Tools.Settings
 
         private void CreateOrDeleteEmbedSettings(TypeCache.TypeCollection types, SettingsCollection collection)
         {
-            Object[] subAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(CollectionAssetPath);
+            string path = AssetDatabase.GetAssetPath(collection);
+            Object[] subAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(path);
 
-            Dictionary<Type, Object> existingSettings = subAssets.ToDictionary(
-                ctx => ctx.GetType(),
-                ctx => ctx);
+            Dictionary<Type, Object> existingSettings = new();
+            for (int i = 0; i < subAssets.Length; i++)
+            {
+                Object subAsset = subAssets[i];
+                if(subAsset == null)
+                    continue;
+
+                Type t = subAsset.GetType();
+                if (!existingSettings.TryAdd(t, subAsset))
+                    AssetDatabase.RemoveObjectFromAsset(subAsset);
+            }
 
             foreach (Type type in types)
             {
@@ -91,60 +114,26 @@ namespace LTX.Tools.Settings
             }
         }
 
-        private void ValidateFolder()
-        {
-            string[] folders = CollectionAssetPath.Split('/')[..^1];
-            string current = folders[0];
-            for (int i = 1; i < folders.Length; i++)
-            {
-                var folder = Path.Combine(current, folders[i]);
-                if (!AssetDatabase.IsValidFolder(folder))
-                    AssetDatabase.CreateFolder(current, folders[i]);
-
-                current = folder;
-            }
-
-            AssetDatabase.Refresh();
-        }
-
         internal void Save() => Save(true);
-        internal void EnsureValidCollection()
+
+        internal void CreateOrFindCollection()
         {
-            ValidateFolder();
             string[] assets = AssetDatabase.FindAssets($"t:{nameof(SettingsCollection)}");
 
-            SettingsCollection collection;
             if (assets.Length == 0)
             {
-                collection = CreateInstance<SettingsCollection>();
-                collection.hideFlags = HideFlags.NotEditable;
-                AssetDatabase.CreateAsset(collection, CollectionAssetPath);
+                Collection = CreateInstance<SettingsCollection>();
+                Collection.hideFlags = HideFlags.NotEditable;
+
+                AssetDatabase.CreateAsset(Collection, "Assets/LTXSettings.asset");
             }
             else
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(assets[0]);
-                if (assetPath != CollectionAssetPath)
-                {
-                    string msg = AssetDatabase.ValidateMoveAsset(assetPath, CollectionAssetPath);
-                    if (!string.IsNullOrEmpty(msg))
-                        Debug.LogError(msg);
-                    else
-                    {
-                        msg = AssetDatabase.MoveAsset(assetPath, CollectionAssetPath);
-                        if (!string.IsNullOrEmpty(msg))
-                            Debug.LogError(msg);
-                    }
-                }
-
-                if (assets.Length > 1)
-                {
-                    for (int i = 1; i < assetPath.Length; i++)
-                    {
-                        var guidToAssetPath = AssetDatabase.GUIDToAssetPath(assets[i]);
-                        AssetDatabase.DeleteAsset(guidToAssetPath);
-                    }
-                }
+                Collection = AssetDatabase.LoadAssetAtPath<SettingsCollection>(assetPath);
+                Collection.hideFlags = HideFlags.NotEditable;
             }
+
         }
     }
 }
