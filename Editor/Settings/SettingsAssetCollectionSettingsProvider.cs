@@ -22,9 +22,10 @@ namespace LTX.Tools.Settings
                 {
                     SettingsAssetCollectionSettings instance = SettingsAssetCollectionSettings.instance;
                     SerializedObject serializedObject = new SerializedObject(instance);
-                    SerializedProperty pathProperty = serializedObject.FindBackingFieldProperty(
-                        nameof(SettingsAssetCollectionSettings.CollectionAssetPath));
-                    PropertyField path = new PropertyField(pathProperty, "Settings Path");
+                    SerializedProperty assetProperty = serializedObject.FindBackingFieldProperty(
+                        nameof(SettingsAssetCollectionSettings.Collection));
+
+                    PropertyField path = new PropertyField(assetProperty, "Project Asset");
                     path.RegisterValueChangeCallback(ctx => instance.Save());
 
                     VisualElement inner = new VisualElement()

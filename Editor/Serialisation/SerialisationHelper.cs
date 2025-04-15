@@ -87,7 +87,7 @@ namespace LTX.Editor
             {
                 if (fieldStructure[i].Contains("["))
                 {
-                    int index = System.Convert.ToInt32(new string(fieldStructure[i].Where(c => char.IsDigit(c))
+                    int index = System.Convert.ToInt32(new string(fieldStructure[i].Where(char.IsDigit)
                         .ToArray()));
                     obj = GetFieldValueWithIndex(rgx.Replace(fieldStructure[i], ""), obj, index);
                 }
