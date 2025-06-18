@@ -8,7 +8,6 @@ namespace LTX.Tools.Samples.SerializedComponents
 {
     public class SampleSComponentsOnMonoBehaviour : MonoBehaviour
     {
-        [FormerlySerializedAs("component")]
         [SerializeField]
         public SComponentContainer<ISampleSComponent> container;
 
